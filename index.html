@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CopyZap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#0a0a0a;color:#f0f0f0;font-family:'DM Sans',sans-serif;min-height:100vh}
+    .glow{position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,#25D36618 0%,transparent 70%);pointer-events:none;z-index:0}
+    .container{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:44px 20px 80px}
+    .header{text-align:center;margin-bottom:36px}
+    .badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.15em;color:#25D366;border:1px solid #25D36640;border-radius:20px;padding:4px 14px;margin-bottom:18px}
+    h1{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;letter-spacing:-2.5px;line-height:1;margin-bottom:14px;color:#fff}
+    h1 span{color:#25D366}
+    .subtitle{color:#777;font-size:15px;line-height:1.6;max-width:380px;margin:0 auto}
+    .card{background:#121212;border:1px solid #1f1f1f;border-radius:18px;padding:28px 26px;display:flex;flex-direction:column;gap:20px;margin-bottom:16px}
+    .field{display:flex;flex-direction:column;gap:8px}
+    label{font-size:13px;font-weight:500;color:#999}
+    .hint{color:#444;font-weight:400}
+    input,textarea{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:12px 15px;font-size:14px;font-family:'DM Sans',sans-serif;color:#f0f0f0;width:100%;transition:border-color .2s}
+    input:focus,textarea:focus{outline:none;border-color:#25D366}
+    input::placeholder,textarea::placeholder{color:#444}
+    textarea{resize:vertical;line-height:1.6}
+    .input-green{border-color:#22c55e!important}
+    .row{display:flex;gap:12px}
+    .row .field{flex:1}
+    .discount-badge{background:#0a2e1a;border:1px solid #22c55e30;color:#4ade80;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;text-align:center;display:none}
+    .qty-row{display:flex;align-items:center;justify-content:space-between}
+    .qty-btns{display:flex;gap:8px}
+    .qty-btn{width:40px;height:40px;border-radius:8px;border:1px solid #2a2a2a;background:#1a1a1a;color:#666;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .15s}
+    .qty-btn.active{background:#25D366;border-color:#25D366;color:#000}
+    .btn-generate{background:#25D366;color:#000;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;width:100%}
+    .btn-generate:disabled{opacity:.4;cursor:not-allowed}
+    .alert-error{background:#2a0a0a;border:1px solid #ff444430;border-radius:9px;padding:10px 14px;color:#ff8080;font-size:13px;line-height:1.5;display:none}
+    .results{display:none;flex-direction:column;gap:14px;margin-top:28px}
+    .results-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+    .results-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#fff}
+    .results-hint{font-size:12px;color:#444}
+    .result-card{background:#121212;border:1px solid #1f1f1f;border-radius:14px;padding:18px 20px}
+    .version-tag{font-size:11px;font-weight:700;letter-spacing:.1em;color:#25D366;text-transform:uppercase;margin-bottom:12px}
+    .result-text{font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.75;white-space:pre-wrap;word-break:break-word;color:#ddd;margin-bottom:14px}
+    .btn-copy{background:#1e1e1e;border:1px solid #2e2e2e;color:#aaa;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+    .btn-copy.copied{background:#0a2e1a;border-color:#22c55e40;color:#4ade80}
+    .tip{margin-top:32px;text-align:center;font-size:12px;color:#333;line-height:1.6}
+    .dots{display:inline-flex;gap:5px;align-items:center;justify-content:center}
+    .dot{width:7px;height:7px;border-radius:50%;background:#000;animation:pulse 1s infinite}
+    .dot:nth-child(2){animation-delay:.15s}
+    .dot:nth-child(3){animation-delay:.3s}
+    @keyframes pulse{0%,100%{opacity:.2}50%{opacity:1}}
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="container">
+    <div class="header">
+      <div class="badge">WHATSAPP • VENDAS • IA</div>
+      <h1>Copy<span>Zap</span></h1>
+      <p class="subtitle">Cole o link, informe os preços e receba textos prontos para disparar no Zap.</p>
+    </div>
+    <div class="card">
+      <div class="field">
+        <label>🔗 Link do produto</label>
+        <input type="text" id="link" placeholder="https://www.amazon.com.br/produto..." oninput="checkForm()" />
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Preço anterior</label>
+          <input type="text" id="prevPrice" placeholder="R$ 299,90" oninput="updateDiscount()" />
+        </div>
+        <div class="field">
+          <label>Preço atual</label>
+          <input type="text" id="currPrice" placeholder="R$ 189,90" oninput="updateDiscount()" />
+        </div>
+      </div>
+      <div class="discount-badge" id="discountBadge"></div>
+      <div class="field">
+        <label>📝 Infos extras <span class="hint">(nome, modelo, estoque...)</span></label>
+        <textarea id="extra" rows="3" placeholder="Ex: Impressora 3D Bambu Lab A1 Mini, apenas 3 unidades..."></textarea>
+      </div>
+      <div class="qty-row">
+        <label>Versões</label>
+        <div class="qty-btns">
+          <button class="qty-btn" onclick="setQty(1)">1</button>
+          <button class="qty-btn" onclick="setQty(2)">2</button>
+          <button class="qty-btn active" onclick="setQty(3)">3</button>
+          <button class="qty-btn" onclick="setQty(5)">5</button>
+        </div>
+      </div>
+      <button class="btn-generate" id="btnGenerate" onclick="generate()" disabled>⚡ Gerar textos de venda</button>
+      <div class="alert-error" id="errorBox"></div>
+    </div>
+    <div class="results" id="results">
+      <div class="results-header">
+        <span class="results-title" id="resultsTitle"></span>
+        <span class="results-hint">Clique para copiar</span>
+      </div>
+      <div id="resultsList"></div>
+    </div>
+    <p class="tip">💡 Para impressoras 3D em abril, o bônus da camisa autografada é adicionado automaticamente.</p>
+  </div>
+  <script>
+    var qty=3;
+    function setQty(n){qty=n;document.querySelectorAll('.qty-btn').forEach(function(b,i){b.classList.toggle('active',[1,2,3,5][i]===n);})}
+    function parseBRL(v){return parseFloat(v.replace(/[^\d,.]/g,'').replace(',','.'))}
+    function fmtBRL(v){var n=parseBRL(v);if(isNaN(n))return v;return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+    function updateDiscount(){var p=parseBRL(document.getElementById('prevPrice').value),c=parseBRL(document.getElementById('currPrice').value),badge=document.getElementById('discountBadge'),ci=document.getElementById('currPrice');if(p&&c&&p>c){badge.textContent='🔥 '+Math.round(((p-c)/p)*100)+'% OFF — economia de R$ '+(p-c).toFixed(2);badge.style.display='block';ci.classList.add('input-green')}else{badge.style.display='none';ci.classList.remove('input-green')}checkForm()}
+    function checkForm(){document.getElementById('btnGenerate').disabled=!(document.getElementById('link').value.trim()&&document.getElementById('prevPrice').value.trim()&&document.getElementById('currPrice').value.trim())}
+    function showError(m){var b=document.getElementById('errorBox');b.textContent='⚠️ '+m;b.style.display='block'}
+    function hideError(){document.getElementById('errorBox').style.display='none'}
+    function setLoading(on){var b=document.getElementById('btnGenerate');if(on){b.innerHTML='<span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';b.disabled=true}else{b.textContent='⚡ Gerar textos de venda';checkForm()}}
+    async function generate(){
+      var link=document.getElementById('link').value.trim(),prev=document.getElementById('prevPrice').value.trim(),curr=document.getElementById('currPrice').value.trim(),extra=document.getElementById('extra').value.trim();
+      hideError();setLoading(true);
+      var p=parseBRL(prev),c=parseBRL(curr);
+      var discText=(p&&c&&p>c)?'Preço anterior: '+fmtBRL(prev)+' | Preço atual: '+fmtBRL(curr)+' | Desconto: '+Math.round(((p-c)/p)*100)+'% (economia de R$ '+(p-c).toFixed(2)+')':'Preço anterior: '+prev+' | Preço atual: '+curr;
+      var sys='Você é especialista em copywriting para vendas no WhatsApp. Crie textos curtos, persuasivos e variados.\​​​​​​​​​​​​​​​​
