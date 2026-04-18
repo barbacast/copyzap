@@ -19,7 +19,7 @@
     .field{display:flex;flex-direction:column;gap:8px}
     label{font-size:13px;font-weight:500;color:#999}
     .hint{color:#444;font-weight:400}
-    input,textarea{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:12px 15px;font-size:14px;font-family:'DM Sans',sans-serif;color:#f0f0f0;width:100%;transition:border-color .2s}
+    input,textarea{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:12px 15px;font-size:14px;font-family:'DM Sans',sans-serif;color:#f0f0f0;width:100%;transition:border-color .2s;-webkit-appearance:none}
     input:focus,textarea:focus{outline:none;border-color:#25D366}
     input::placeholder,textarea::placeholder{color:#444}
     textarea{resize:vertical;line-height:1.6}
@@ -29,9 +29,9 @@
     .discount-badge{background:#0a2e1a;border:1px solid #22c55e30;color:#4ade80;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;text-align:center;display:none}
     .qty-row{display:flex;align-items:center;justify-content:space-between}
     .qty-btns{display:flex;gap:8px}
-    .qty-btn{width:40px;height:40px;border-radius:8px;border:1px solid #2a2a2a;background:#1a1a1a;color:#666;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .15s}
+    .qty-btn{width:44px;height:44px;border-radius:8px;border:1px solid #2a2a2a;background:#1a1a1a;color:#666;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;-webkit-appearance:none;touch-action:manipulation}
     .qty-btn.active{background:#25D366;border-color:#25D366;color:#000}
-    .btn-generate{background:#25D366;color:#000;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;width:100%}
+    .btn-generate{background:#25D366;color:#000;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;width:100%;-webkit-appearance:none;touch-action:manipulation}
     .btn-generate:disabled{opacity:.4;cursor:not-allowed}
     .alert-error{background:#2a0a0a;border:1px solid #ff444430;border-radius:9px;padding:10px 14px;color:#ff8080;font-size:13px;line-height:1.5;display:none}
     .results{display:none;flex-direction:column;gap:14px;margin-top:28px}
@@ -41,7 +41,7 @@
     .result-card{background:#121212;border:1px solid #1f1f1f;border-radius:14px;padding:18px 20px}
     .version-tag{font-size:11px;font-weight:700;letter-spacing:.1em;color:#25D366;text-transform:uppercase;margin-bottom:12px}
     .result-text{font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.75;white-space:pre-wrap;word-break:break-word;color:#ddd;margin-bottom:14px}
-    .btn-copy{background:#1e1e1e;border:1px solid #2e2e2e;color:#aaa;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+    .btn-copy{background:#1e1e1e;border:1px solid #2e2e2e;color:#aaa;border-radius:8px;padding:10px 18px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-appearance:none;touch-action:manipulation}
     .btn-copy.copied{background:#0a2e1a;border-color:#22c55e40;color:#4ade80}
     .tip{margin-top:32px;text-align:center;font-size:12px;color:#333;line-height:1.6}
     .dots{display:inline-flex;gap:5px;align-items:center;justify-content:center}
@@ -62,16 +62,16 @@
     <div class="card">
       <div class="field">
         <label>🔗 Link do produto</label>
-        <input type="text" id="link" placeholder="https://www.amazon.com.br/produto..." oninput="checkForm()" />
+        <input type="text" id="link" placeholder="https://www.amazon.com.br/produto..." />
       </div>
       <div class="row">
         <div class="field">
           <label>Preço anterior</label>
-          <input type="text" id="prevPrice" placeholder="R$ 299,90" oninput="updateDiscount()" />
+          <input type="text" id="prevPrice" placeholder="R$ 299,90" />
         </div>
         <div class="field">
           <label>Preço atual</label>
-          <input type="text" id="currPrice" placeholder="R$ 189,90" oninput="updateDiscount()" />
+          <input type="text" id="currPrice" placeholder="R$ 189,90" />
         </div>
       </div>
       <div class="discount-badge" id="discountBadge"></div>
@@ -82,37 +82,48 @@
       <div class="qty-row">
         <label>Versões</label>
         <div class="qty-btns">
-          <button class="qty-btn" onclick="setQty(1)">1</button>
-          <button class="qty-btn" onclick="setQty(2)">2</button>
-          <button class="qty-btn active" onclick="setQty(3)">3</button>
-          <button class="qty-btn" onclick="setQty(5)">5</button>
+          <button class="qty-btn" id="qty1">1</button>
+          <button class="qty-btn" id="qty2">2</button>
+          <button class="qty-btn active" id="qty3">3</button>
+          <button class="qty-btn" id="qty5">5</button>
         </div>
       </div>
-      <button class="btn-generate" id="btnGenerate" onclick="generate()" disabled>⚡ Gerar textos de venda</button>
+      <button class="btn-generate" id="btnGenerate" disabled>⚡ Gerar textos de venda</button>
       <div class="alert-error" id="errorBox"></div>
     </div>
     <div class="results" id="results">
       <div class="results-header">
         <span class="results-title" id="resultsTitle"></span>
-        <span class="results-hint">Clique para copiar</span>
+        <span class="results-hint">Toque para copiar</span>
       </div>
       <div id="resultsList"></div>
     </div>
     <p class="tip">💡 Para impressoras 3D em abril, o bônus da camisa autografada é adicionado automaticamente.</p>
   </div>
   <script>
-    var qty=3;
-    function setQty(n){qty=n;document.querySelectorAll('.qty-btn').forEach(function(b,i){b.classList.toggle('active',[1,2,3,5][i]===n);})}
+    var qty = 3;
     function parseBRL(v){return parseFloat(v.replace(/[^\d,.]/g,'').replace(',','.'))}
     function fmtBRL(v){var n=parseBRL(v);if(isNaN(n))return v;return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-    function updateDiscount(){var p=parseBRL(document.getElementById('prevPrice').value),c=parseBRL(document.getElementById('currPrice').value),badge=document.getElementById('discountBadge'),ci=document.getElementById('currPrice');if(p&&c&&p>c){badge.textContent='🔥 '+Math.round(((p-c)/p)*100)+'% OFF — economia de R$ '+(p-c).toFixed(2);badge.style.display='block';ci.classList.add('input-green')}else{badge.style.display='none';ci.classList.remove('input-green')}checkForm()}
     function checkForm(){document.getElementById('btnGenerate').disabled=!(document.getElementById('link').value.trim()&&document.getElementById('prevPrice').value.trim()&&document.getElementById('currPrice').value.trim())}
+    function updateDiscount(){var p=parseBRL(document.getElementById('prevPrice').value),c=parseBRL(document.getElementById('currPrice').value),badge=document.getElementById('discountBadge'),ci=document.getElementById('currPrice');if(p&&c&&p>c){badge.textContent='🔥 '+Math.round(((p-c)/p)*100)+'% OFF — economia de R$ '+(p-c).toFixed(2);badge.style.display='block';ci.classList.add('input-green')}else{badge.style.display='none';ci.classList.remove('input-green')}checkForm()}
+    function setQty(n){qty=n;[1,2,3,5].forEach(function(v){document.getElementById('qty'+v).classList.toggle('active',v===n)})}
     function showError(m){var b=document.getElementById('errorBox');b.textContent='⚠️ '+m;b.style.display='block'}
     function hideError(){document.getElementById('errorBox').style.display='none'}
     function setLoading(on){var b=document.getElementById('btnGenerate');if(on){b.innerHTML='<span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';b.disabled=true}else{b.textContent='⚡ Gerar textos de venda';checkForm()}}
-    async function generate(){
-      var link=document.getElementById('link').value.trim(),prev=document.getElementById('prevPrice').value.trim(),curr=document.getElementById('currPrice').value.trim(),extra=document.getElementById('extra').value.trim();
-      hideError();setLoading(true);
-      var p=parseBRL(prev),c=parseBRL(curr);
-      var discText=(p&&c&&p>c)?'Preço anterior: '+fmtBRL(prev)+' | Preço atual: '+fmtBRL(curr)+' | Desconto: '+Math.round(((p-c)/p)*100)+'% (economia de R$ '+(p-c).toFixed(2)+')':'Preço anterior: '+prev+' | Preço atual: '+curr;
-      var sys='Você é especialista em copywriting para vendas no WhatsApp. Crie textos curtos, persuasivos e variados.\​​​​​​​​​​​​​​​​
+    function copyToClipboard(text,btn){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){btn.textContent='✓ Copiado!';btn.classList.add('copied');setTimeout(function(){btn.textContent='📋 Copiar';btn.classList.remove('copied')},2000)}).catch(function(){fallbackCopy(text,btn)})}else{fallbackCopy(text,btn)}}
+    function fallbackCopy(text,btn){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta);btn.textContent='✓ Copiado!';btn.classList.add('copied');setTimeout(function(){btn.textContent='📋 Copiar';btn.classList.remove('copied')},2000)}
+    function renderResults(texts){var list=document.getElementById('resultsList'),container=document.getElementById('results');document.getElementById('resultsTitle').textContent='✅ '+texts.length+' texto'+(texts.length>1?'s':'')+' gerado'+(texts.length>1?'s':'');list.innerHTML='';texts.forEach(function(text,i){var card=document.createElement('div');card.className='result-card';var tag=document.createElement('div');tag.className='version-tag';tag.textContent='Versão '+(i+1);var pre=document.createElement('div');pre.className='result-text';pre.textContent=text;var btn=document.createElement('button');btn.className='btn-copy';btn.textContent='📋 Copiar';btn.addEventListener('click',function(){copyToClipboard(text,btn)});card.appendChild(tag);card.appendChild(pre);card.appendChild(btn);list.appendChild(card)});container.style.display='flex';container.scrollIntoView({behavior:'smooth'})}
+    async function generate(){var link=document.getElementById('link').value.trim(),prev=document.getElementById('prevPrice').value.trim(),curr=document.getElementById('currPrice').value.trim(),extra=document.getElementById('extra').value.trim();hideError();setLoading(true);var p=parseBRL(prev),c=parseBRL(curr);var discText=(p&&c&&p>c)?'Preço anterior: '+fmtBRL(prev)+' | Preço atual: '+fmtBRL(curr)+' | Desconto: '+Math.round(((p-c)/p)*100)+'% (economia de R$ '+(p-c).toFixed(2)+')':'Preço anterior: '+prev+' | Preço atual: '+curr;var sys='Você é especialista em copywriting para vendas no WhatsApp. Crie textos curtos, persuasivos e variados.\n\nREGRAS:\n- Use emojis estrategicamente\n- Destaque sempre a diferença de preço\n- Crie urgência real\n- Tom: direto, amigável, animado\n- Máximo 8 linhas\n- Sempre inclua o link ao final\n- Varie o estilo entre versões\n- NÃO comece com "Olá" ou "Oi"\n- Se o produto for uma impressora 3D, adicione: "🔴⚫ *BÔNUS ABRIL:* Comprando este mês, você concorre a uma camisa do seu time brasileiro favorito autografada! Sorteio no fim de abril. 🏆"\n\nResponda APENAS com os textos separados por "---".';var msg='Crie '+qty+' textos DIFERENTES:\n\nLink: '+link+'\n'+discText+(extra?'\nInfo: '+extra:'')+'\n\nSepare com "---".';try{var res=await fetch('/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:sys,messages:[{role:'user',content:msg}]})});var data=await res.json();if(data.error){showError(data.error.message||data.error);setLoading(false);return}var raw=(data.content||[]).map(function(b){return b.text||''}).join('').trim();var texts=raw.split(/\n?-{3,}\n?/).map(function(t){return t.trim()}).filter(Boolean);if(!texts.length){showError('Nenhum texto gerado.');setLoading(false);return}renderResults(texts)}catch(e){showError('Erro: '+e.message)}setLoading(false)}
+    document.addEventListener('DOMContentLoaded',function(){
+      document.getElementById('link').addEventListener('input',checkForm);
+      document.getElementById('prevPrice').addEventListener('input',updateDiscount);
+      document.getElementById('currPrice').addEventListener('input',updateDiscount);
+      document.getElementById('btnGenerate').addEventListener('click',generate);
+      document.getElementById('qty1').addEventListener('click',function(){setQty(1)});
+      document.getElementById('qty2').addEventListener('click',function(){setQty(2)});
+      document.getElementById('qty3').addEventListener('click',function(){setQty(3)});
+      document.getElementById('qty5').addEventListener('click',function(){setQty(5)});
+    });
+  </script>
+</body>
+</html>
