@@ -101,7 +101,7 @@
     <p class="tip">💡 Para impressoras 3D em abril, o bônus da camisa autografada é adicionado automaticamente.</p>
   </div>
   <script>
-    var qty = 3;
+    var qty=3;
     function parseBRL(v){return parseFloat(v.replace(/[^\d,.]/g,'').replace(',','.'))}
     function fmtBRL(v){var n=parseBRL(v);if(isNaN(n))return v;return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
     function checkForm(){document.getElementById('btnGenerate').disabled=!(document.getElementById('link').value.trim()&&document.getElementById('prevPrice').value.trim()&&document.getElementById('currPrice').value.trim())}
