@@ -36,7 +36,7 @@ const server = http.createServer((req, res) => {
       catch { res.writeHead(400); res.end(JSON.stringify({ error: "JSON invalido" })); return; }
 
       const payload = JSON.stringify({
-        model: "claude-haiku-4-5-20251001",,
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 1500,
         system: parsed.system,
         messages: parsed.messages,
