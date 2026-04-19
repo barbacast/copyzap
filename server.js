@@ -6,6 +6,17 @@ const path = require("path");
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.ANTHROPIC_API_KEY || "";
 
+function fetchUrl(url) {
+  return new Promise((resolve) => {
+    const jinaUrl = "https://r.jina.ai/" + url;
+    https.get(jinaUrl, { headers: { "Accept": "text/plain" } }, (res) => {
+      let data = "";
+      res.on("data", (chunk) => { data += chunk; });
+      res.on("end", () => resolve(data.slice(0, 2000)));
+    }).on("error", () => resolve(""));
+  });
+}
+
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -30,15 +41,22 @@ const server = http.createServer((req, res) => {
   if (req.method === "POST" && req.url === "/generate") {
     let body = "";
     req.on("data", (chunk) => { body += chunk; });
-    req.on("end", () => {
+    req.on("end", async () => {
       let parsed;
       try { parsed = JSON.parse(body); }
       catch { res.writeHead(400); res.end(JSON.stringify({ error: "JSON invalido" })); return; }
 
+      let productInfo = "";
+      if (parsed.link) {
+        productInfo = await fetchUrl(parsed.link);
+      }
+
+      const systemPrompt = parsed.system + (productInfo ? "\n\nINFORMAÇÕES EXTRAÍDAS DO LINK DO PRODUTO:\n" + productInfo : "");
+
       const payload = JSON.stringify({
         model: "claude-haiku-4-5-20251001",
         max_tokens: 1500,
-        system: parsed.system,
+        system: systemPrompt,
         messages: parsed.messages,
       });
 
