@@ -17,7 +17,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (req.method === "GET" && (req.url === "/" || req.url === "/index.html")) {
+  if (req.method === "GET") {
     const filePath = path.join(__dirname, "index.html");
     fs.readFile(filePath, (err, content) => {
       if (err) { res.writeHead(404); res.end("Not found"); return; }
@@ -33,7 +33,7 @@ const server = http.createServer((req, res) => {
     req.on("end", () => {
       let parsed;
       try { parsed = JSON.parse(body); }
-      catch { res.writeHead(400); res.end(JSON.stringify({ error: "JSON inválido" })); return; }
+      catch { res.writeHead(400); res.end(JSON.stringify({ error: "JSON invalido" })); return; }
 
       const payload = JSON.stringify({
         model: "claude-3-5-sonnet-20241022",
